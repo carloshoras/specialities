@@ -35,38 +35,48 @@ const express = require('express');
 const app = express();
 
 function selection (specialty) {
+    let html = ""
+    let count = 0
     for (let user of usersData) {
-        
+        if (user.specialty === specialty) {
+          html += `<li><p>Name: ${user.name} ; Age: ${user.age}</p></li>`
+          count++
+        }
     }
+    return {count, html}
 }
 
 app.get('/', (req, res) => {
   res.end(
-    `<h1>Hola soy la Ruta Principal</h1><h2>Path: ${req.path}</h2><a href="/marketing">marketing</a><a href="/developers">developers</a>`
-  );
-});
-
-app.get('/marketing', (req, res) => {
-  res.end(
-    `<h1>Hola soy el marketing</h1><h2>Path: ${req.path}</h2><a href="/">home</a><a href="/developers">developers</a>`
-  );
-});
-
-app.get('/QAs', (req, res) => {
-    res.end(
-      `<h1>Hola soy el QAs</h1><h2>Path: ${req.path}</h2><a href="/">home</a><a href="/developers">developers</a>`
+    `<h1>HOME</h1><a href="/developers">Developers</a><a href="/marketing">Marketing</a><a href="/qas">QAs</a><a>Ventas</a>`
     );
+  });
+  
+  app.get('/marketing', (req, res) => {
+  let {count, html} = selection('marketing')
+  res.end(
+    `<h1>Departamento de Marketing</h1><h2>Compuesto por ${count} personas: </h2><ul>${html}</ul><a href="/">Home</a><a href="/developers">Developers</a><a href="/qas">QAs</a><a href="/ventas">Ventas</a>`
+  );
+});
+
+app.get('/qas', (req, res) => {
+  let {count, html} = selection('QAs')
+  res.end(
+    `<h1>Departamento de QAs</h1><h2>Compuesto por ${count} personas: </h2><ul>${html}</ul><a href="/">Home</a><a href="/developers">Developers</a><a href="/marketing">Marketing</a><a href="/ventas">Ventas</a>`
+  );
   });
 
 app.get('/developers', (req, res) => {
+  let {count, html} = selection('developers')
   res.end(
-    `<h1>Hola soy el developers</h1><h2>Path: ${req.path}</h2><a href="/">home</a><a href="/marketing">marketing</a>`
+    `<h1>Departamento de Developers</h1><h2>Compuesto por ${count} personas: </h2><ul>${html}</ul><a href="/">Home</a><a href="/marketing">Marketing</a><a href="/qas">QAs</a href="/ventas"><a>Ventas</a>`
   );
 });
 
 app.get('/ventas', (req, res) => {
+    let {count, html} = selection('ventas')
     res.end(
-      `<h1>Departamento de Ventas</h1><h2>Path: ${req.path}</h2><a href="/">home</a><a href="/marketing">marketing</a>`
+      `<h1>Departamento de Ventas</h1><h2>Compuesto por ${count} personas: </h2><ul>${html}</ul><a href="/">Home</a><a href="/developers">Developers</a><a href="/marketing">Marketing</a><a href="/qas">QAs</a>`
     );
   });
 
